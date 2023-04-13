@@ -8,7 +8,14 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>strike4j</name>
-    <description>Inofficial java lib to interact with the Alesis strike pro drum module. Disclaimer: This lib is NO OFFICIAL Alesis product, it is not verified by the manufacturer and COULD CAUSE DAMAGE to your device! Using this lib COULD VOID THE WARRANTY of your device! Do NOT use this lib for copyright infringements. USE AT YOUR OWN RISK!
+    <description>
+        <![CDATA[
+        Inofficial java lib to interact with the Alesis strike pro drum module.
+
+        Disclaimer: This lib is NO OFFICIAL Alesis product, it is not verified by the manufacturer
+        and COULD CAUSE DAMAGE to your device! Using this lib COULD VOID THE WARRANTY of your device!
+        Do NOT use this lib for copyright infringements. USE AT YOUR OWN RISK!
+        ]]>
     </description>
     <url>https://github.com/cbuschka/strike4j</url>
     <properties>
@@ -16,6 +23,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
     </properties>
+    <scm>
+        <developerConnection>scm:git:ssh://git@github.com/cbuschka/strike4j.git</developerConnection>
+        <connection>scm:git:ssh://git@github.com/cbuschka/strike4j.git</connection>
+        <tag>HEAD</tag>
+    </scm>
     <build>
         <plugins>
             <plugin>
