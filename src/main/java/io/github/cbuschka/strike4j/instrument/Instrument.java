@@ -18,6 +18,9 @@ public class Instrument {
     @Size(min = 1, max = Short.MAX_VALUE)
     private String path;
 
+    @NotNull
+    private InstrumentGroup group;
+
     @Min(1)
     @Max(99)
     private int level;

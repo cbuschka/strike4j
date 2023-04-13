@@ -6,6 +6,7 @@ public class InstrumentAssertions {
 
     public static void assertEqual(Instrument instrument, Instrument expected) {
 
+        assertThat(instrument.getGroup()).isEqualTo(expected.getGroup());
         assertThat(instrument.getCutOff()).isEqualTo(expected.getCutOff());
         assertThat(instrument.getDecay()).isEqualTo(expected.getDecay());
         assertThat(instrument.getLevel()).isEqualTo(expected.getLevel());

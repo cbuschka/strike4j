@@ -62,13 +62,20 @@ class InstrumentValidatorTest {
 
         whenInstrumentValidated();
 
-        assertThat(violations.size()).isEqualTo(6);
+        assertThat(violations.size()).isEqualTo(7);
+        thenDetectsThatGroupIsMissing();
         thenDetectsThatSampleMappingsMissing();
         thenDetectsThatFilterTypeIsMissing();
         thenDetectsThatLevelIsMissing();
         thenDetectsThatCycleModeIsMissing();
         thenDetectsThatPathIsMissing();
         thenDetectsThatDecayIsMissing();
+    }
+
+    private void thenDetectsThatGroupIsMissing() {
+        assertThat(violations
+                .stream().anyMatch((c) -> c.getPropertyPath().toString().equals("group")
+                        && c.getMessage().equals("must not be null"))).isTrue();
     }
 
     private void givenIsAnEmptyInstrument() {

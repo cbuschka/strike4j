@@ -68,8 +68,7 @@ public class InstrumentWriter implements AutoCloseable {
         public void write(Instrument instrument) throws IOException {
             out.writeUint32(24);
             out.write(0);
-            int dontKnow3 = 0; // 0 or 3?
-            out.write(dontKnow3);
+            out.writeUint8(instrument.getGroup().ordinal());
             out.write(new byte[]{1, 0});
             out.write(new byte[]{0, 0});
             out.writeUint8(instrument.getLevel());

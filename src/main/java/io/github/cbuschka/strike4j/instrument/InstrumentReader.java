@@ -96,7 +96,8 @@ public class InstrumentReader implements AutoCloseable {
 
         public void read(Instrument instrument) throws IOException {
             in.consumeBytes(new byte[]{0});
-            int dontKnow3 = in.readUint8(); // 0 or 3?
+            int instrumentGroupNum = in.readUint8();
+            instrument.setGroup(InstrumentGroup.valueOf(instrumentGroupNum));
             in.consumeBytes(new byte[]{1, 0});
             in.consumeBytes(new byte[]{0, 0});
             int level = in.readUint8();
