@@ -1,11 +1,13 @@
 package io.github.cbuschka.strike4j.instrument;
 
+import javax.validation.ConstraintViolation;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class InstrumentWriter implements AutoCloseable {
     private OutputStream out;
@@ -15,6 +17,18 @@ public class InstrumentWriter implements AutoCloseable {
     }
 
     public void write(Instrument instrument) throws IOException {
+        write(instrument, true);
+    }
+
+    public void write(Instrument instrument, boolean validate) throws IOException {
+        if (validate) {
+            InstrumentValidator validator = new InstrumentValidator();
+            Set<ConstraintViolation<Instrument>> violations = validator.validate(instrument);
+            if (!violations.isEmpty()) {
+                throw new IOException("Instrument is not valid: " + violations);
+            }
+        }
+
         ByteArrayOutputStream bufOut = new ByteArrayOutputStream();
         try (StrikeDataOutputStream bytesDataOut = new StrikeDataOutputStream(bufOut)) {
             writeFileHeader(bytesDataOut);

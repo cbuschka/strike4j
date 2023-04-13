@@ -28,13 +28,14 @@ class InstrumentWriterTest {
                             InputStream in = zipFile.getInputStream(zipFileEntry);
                             InstrumentReader rd = new InstrumentReader(zipFileEntry.getName(),
                                     in);
-                            Instrument instrumentRead = rd.read();
+                            Instrument instrumentRead = rd.read(false);
 
                             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
                             InstrumentWriter writer = new InstrumentWriter(bytesOut);
-                            writer.write(instrumentRead);
+                            writer.write(instrumentRead, false);
                             writer.close();
-                            Instrument instrumentReread = new InstrumentReader(zipFileEntry.getName(), new ByteArrayInputStream(bytesOut.toByteArray())).read();
+                            InstrumentReader instrumentReader = new InstrumentReader(zipFileEntry.getName(), new ByteArrayInputStream(bytesOut.toByteArray()));
+                            Instrument instrumentReread = instrumentReader.read(false);
 
                             InstrumentAssertions.assertEqual(instrumentReread, instrumentRead);
 
@@ -179,16 +180,16 @@ class InstrumentWriterTest {
         InputStream in = open(path);
         byte[] origData = IOUtils.readAll(in);
         InstrumentReader reader = new InstrumentReader(path, new ByteArrayInputStream(origData));
-        Instrument orig = reader.read();
+        Instrument orig = reader.read(false);
 
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         InstrumentWriter writer = new InstrumentWriter(bytesOut);
-        writer.write(orig);
+        writer.write(orig, false);
         writer.close();
 
         byte[] rewrittenData = bytesOut.toByteArray();
         reader = new InstrumentReader(path, new ByteArrayInputStream(rewrittenData));
-        Instrument rewritten = reader.read();
+        Instrument rewritten = reader.read(false);
 
         assertThat(rewrittenData.length).isEqualTo(origData.length);
         InstrumentAssertions.assertEqual(rewritten, orig);

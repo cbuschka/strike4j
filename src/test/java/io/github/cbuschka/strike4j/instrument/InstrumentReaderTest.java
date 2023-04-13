@@ -28,7 +28,7 @@ class InstrumentReaderTest {
                             InputStream in = zipFile.getInputStream(zipFileEntry);
                             InstrumentReader rd = new InstrumentReader(zipFileEntry.getName(),
                                     in);
-                            Instrument instrumentRead = rd.read();
+                            Instrument instrumentRead = rd.read(false);
 
                             log.info("{} ok.", zipFileEntry.getName());
                             return null;
@@ -47,7 +47,7 @@ class InstrumentReaderTest {
         String path = "/NewSimple.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -63,7 +63,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleLevel95.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -80,7 +80,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleDecay50.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(50);
@@ -97,7 +97,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleCutOff80.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(80);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -114,7 +114,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleHipass.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -131,7 +131,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleLoopOn.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -149,7 +149,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleSemi8.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -167,7 +167,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleSemi-8.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -185,7 +185,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleFine-10.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -202,7 +202,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleFine35.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -220,7 +220,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleVelDecay70.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -237,7 +237,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleVelFilter75.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -255,7 +255,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleVelLevel82.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -274,7 +274,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleVelPitch94.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -295,7 +295,7 @@ class InstrumentReaderTest {
         String path = "/NewSimplePan-27.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -316,7 +316,7 @@ class InstrumentReaderTest {
         String path = "/NewSimpleCycleRandom.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
 
         assertThat(read.getCutOff()).isEqualTo(99);
         assertThat(read.getDecay()).isEqualTo(98);
@@ -338,7 +338,7 @@ class InstrumentReaderTest {
         String path = "/NewHHCymbal5x1.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
     }
 
     @Test
@@ -346,7 +346,7 @@ class InstrumentReaderTest {
         String path = "/NewHHCymbal3x1.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
     }
 
     @Test
@@ -354,7 +354,7 @@ class InstrumentReaderTest {
         String path = "/NewHHPedal2x1.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
     }
 
     @Test
@@ -362,6 +362,6 @@ class InstrumentReaderTest {
         String path = "/NewHHCymbal3x2.sin";
         InputStream in = getClass().getResourceAsStream(path);
         InstrumentReader reader = new InstrumentReader(path, in);
-        Instrument read = reader.read();
+        Instrument read = reader.read(false);
     }
 }

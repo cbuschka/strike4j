@@ -3,14 +3,15 @@ package io.github.cbuschka.strike4j.instrument;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.ConstraintViolation;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 public class InstrumentReader implements AutoCloseable {
@@ -30,6 +31,10 @@ public class InstrumentReader implements AutoCloseable {
     }
 
     public Instrument read() throws IOException {
+        return read(true);
+    }
+
+    public Instrument read(boolean validate) throws IOException {
         readFileHeader();
 
         Instrument instrument = new Instrument();
@@ -40,6 +45,14 @@ public class InstrumentReader implements AutoCloseable {
         MappingsSection mappingsSection = getMappingsSection();
         List<String> strings = getStringsSection().read();
         mappingsSection.read(instrument, strings);
+
+        if (validate) {
+            InstrumentValidator validator = new InstrumentValidator();
+            Set<ConstraintViolation<Instrument>> violations = validator.validate(instrument);
+            if (!violations.isEmpty()) {
+                throw new IOException("Instrument is not valid: " + violations);
+            }
+        }
 
         return instrument;
     }
