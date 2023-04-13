@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.Objects;
 import java.util.zip.ZipFile;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Slf4j
@@ -175,8 +176,9 @@ class InstrumentWriterTest {
     }
 
     private void testRoundtrip(String path) throws IOException {
-        InputStream in = getClass().getResourceAsStream(path);
-        InstrumentReader reader = new InstrumentReader(path, in);
+        InputStream in = open(path);
+        byte[] origData = IOUtils.readAll(in);
+        InstrumentReader reader = new InstrumentReader(path, new ByteArrayInputStream(origData));
         Instrument orig = reader.read();
 
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
@@ -184,10 +186,20 @@ class InstrumentWriterTest {
         writer.write(orig);
         writer.close();
 
-        reader = new InstrumentReader(path, new ByteArrayInputStream(bytesOut.toByteArray()));
-        Instrument read = reader.read();
+        byte[] rewrittenData = bytesOut.toByteArray();
+        reader = new InstrumentReader(path, new ByteArrayInputStream(rewrittenData));
+        Instrument rewritten = reader.read();
 
-        InstrumentAssertions.assertEqual(read, orig);
+        assertThat(rewrittenData.length).isEqualTo(origData.length);
+        InstrumentAssertions.assertEqual(rewritten, orig);
+    }
+
+    private InputStream open(String path) throws FileNotFoundException {
+        InputStream in = getClass().getResourceAsStream(path);
+        if (in == null) {
+            throw new FileNotFoundException(path);
+        }
+        return in;
     }
 
 

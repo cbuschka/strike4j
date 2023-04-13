@@ -1,30 +1,41 @@
 package io.github.cbuschka.strike4j.instrument;
 
-import com.sun.tools.javac.Main;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class InstrumentWriter {
-    private StrikeDataOutputStream out;
+public class InstrumentWriter implements AutoCloseable {
+    private OutputStream out;
 
     public InstrumentWriter(OutputStream out) {
-        this.out = new StrikeDataOutputStream(out);
+        this.out = out;
     }
 
     public void write(Instrument instrument) throws IOException {
-        writeFileHeader();
-        new MainSection(out).write(instrument);
-        List<String> stringTable = new MappingsSection(out).write(instrument);
-        new StringsSection(out).write(stringTable);
+        ByteArrayOutputStream bufOut = new ByteArrayOutputStream();
+        try (StrikeDataOutputStream bytesDataOut = new StrikeDataOutputStream(bufOut)) {
+            writeFileHeader(bytesDataOut);
+            new MainSection(bytesDataOut).write(instrument);
+            List<String> stringTable = new MappingsSection(bytesDataOut).write(instrument);
+            new StringsSection(bytesDataOut).write(stringTable);
+        }
+
+        byte[] payload = bufOut.toByteArray();
+        out.write(payload);
+        int missingZeroes = (payload.length % 4 > 0 ? 4 - payload.length % 4 : 0);
+        writeZeroePad(out, missingZeroes);
     }
 
-    private void writeFileHeader() throws IOException {
+    private void writeZeroePad(OutputStream out, int n) throws IOException {
+        for (int i = 0; i < n; ++i) {
+            out.write(0);
+        }
+    }
+
+    private void writeFileHeader(StrikeDataOutputStream out) throws IOException {
         out.write("INST".getBytes(StandardCharsets.UTF_8));
     }
 
@@ -141,7 +152,5 @@ public class InstrumentWriter {
             allOut.writeUint32(stringTablePayloadBytes.length); // placeholder for strTableLen
             allOut.write(stringTablePayloadBytes);
         }
-
     }
-
 }

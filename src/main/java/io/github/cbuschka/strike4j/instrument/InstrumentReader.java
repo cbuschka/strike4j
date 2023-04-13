@@ -22,7 +22,7 @@ public class InstrumentReader implements AutoCloseable {
             throw new IllegalArgumentException("In must not be null.");
         }
         this.path = path;
-        byte[] all = readAll(in);
+        byte[] all = IOUtils.readAll(in);
         if ((all.length % 4) != 0) {
             throw new IOException("Length of file is no multiple of 4.");
         }
@@ -195,16 +195,5 @@ public class InstrumentReader implements AutoCloseable {
             return strings;
         }
 
-    }
-
-    private static byte[] readAll(InputStream in) throws IOException {
-        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024 * 4];
-        int count;
-        while ((count = in.read(buf)) != -1) {
-            bytesOut.write(buf, 0, count);
-        }
-        bytesOut.close();
-        return bytesOut.toByteArray();
     }
 }
