@@ -1,13 +1,46 @@
 package io.github.cbuschka.strike4j.instrument;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Objects;
+import java.util.zip.ZipFile;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@Slf4j
 class InstrumentReaderTest {
+
+    private final File backupZipFilePath = new File("strike-sdcard-bak.zip");
+
+    @Test
+    void canReadAllFromDrumModule() throws IOException {
+        assumeTrue(backupZipFilePath.isFile(), "SDCard backup required.");
+
+        try (ZipFile zipFile = new ZipFile(backupZipFilePath);) {
+            zipFile.stream()
+                    .filter((zipFileEntry) -> zipFileEntry.getName().endsWith(".sin"))
+                    .map((zipFileEntry) -> {
+                        try {
+                            InputStream in = zipFile.getInputStream(zipFileEntry);
+                            InstrumentReader rd = new InstrumentReader(zipFileEntry.getName(),
+                                    in);
+                            Instrument instrumentRead = rd.read();
+
+                            log.info("{} ok.", zipFileEntry.getName());
+                            return null;
+                        } catch (Exception e) {
+                            log.warn("{} failed.", zipFileEntry.getName(), e);
+                            return e;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .findAny().ifPresent((e) -> Assertions.fail());
+        }
+    }
 
     @Test
     void newSimple() throws IOException {
