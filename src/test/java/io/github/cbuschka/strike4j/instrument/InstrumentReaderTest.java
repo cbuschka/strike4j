@@ -128,6 +128,42 @@ class InstrumentReaderTest {
         assertThat(read.getVelDecay()).isEqualTo(0);
     }
 
+
+    @Test
+    void newSimpleSemiMinus8() throws IOException {
+        String path = "/NewSimpleSemi-8.sin";
+        InputStream in = getClass().getResourceAsStream(path);
+        InstrumentReader reader = new InstrumentReader(path, in);
+        Instrument read = reader.read();
+
+        assertThat(read.getCutOff()).isEqualTo(99);
+        assertThat(read.getDecay()).isEqualTo(98);
+        assertThat(read.getLevel()).isEqualTo(90);
+        assertThat(read.getFilterType()).isEqualTo(FilterType.LOPASS);
+        assertThat(read.isLoopOn()).isFalse();
+        assertThat(read.getSemi()).isEqualTo(-8);
+        assertThat(read.getFine()).isEqualTo(0);
+        assertThat(read.getVelDecay()).isEqualTo(0);
+    }
+
+
+    @Test
+    void newSimpleFineMinus10() throws IOException {
+        String path = "/NewSimpleFine-10.sin";
+        InputStream in = getClass().getResourceAsStream(path);
+        InstrumentReader reader = new InstrumentReader(path, in);
+        Instrument read = reader.read();
+
+        assertThat(read.getCutOff()).isEqualTo(99);
+        assertThat(read.getDecay()).isEqualTo(98);
+        assertThat(read.getLevel()).isEqualTo(90);
+        assertThat(read.getFilterType()).isEqualTo(FilterType.LOPASS);
+        assertThat(read.isLoopOn()).isFalse();
+        assertThat(read.getSemi()).isEqualTo(0);
+        assertThat(read.getFine()).isEqualTo(-10);
+        assertThat(read.getVelDecay()).isEqualTo(0);
+    }
+
     @Test
     void newSimpleFine35() throws IOException {
         String path = "/NewSimpleFine35.sin";

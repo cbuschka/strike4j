@@ -82,9 +82,9 @@ public class InstrumentReader {
             int decay = in.readUint8();
             instrument.setDecay(decay);
             in.consumeBytes(new byte[]{0, 0});
-            int semi = in.readUint8();
+            int semi = in.readSint8();
             instrument.setSemi(semi);
-            int fine = in.readUint8();
+            int fine = in.readSint8();
             instrument.setFine(fine);
             int cutOff = in.readUint8();
             instrument.setCutOff(cutOff);
