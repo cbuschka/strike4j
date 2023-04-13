@@ -3,6 +3,8 @@ package io.github.cbuschka.strike4j.instrument;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -11,16 +13,20 @@ import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
-public class InstrumentReader {
+public class InstrumentReader implements AutoCloseable {
     String path;
     StrikeDataInputStream allIn;
 
-    public InstrumentReader(String path, InputStream in) {
+    public InstrumentReader(String path, InputStream in) throws IOException {
         if (in == null) {
             throw new IllegalArgumentException("In must not be null.");
         }
         this.path = path;
-        this.allIn = new StrikeDataInputStream(in);
+        byte[] all = readAll(in);
+        if ((all.length % 4) != 0) {
+            throw new IOException("Length of file is no multiple of 4.");
+        }
+        this.allIn = new StrikeDataInputStream(new ByteArrayInputStream(all));
     }
 
     public Instrument read() throws IOException {
@@ -36,6 +42,11 @@ public class InstrumentReader {
         mappingsSection.read(instrument, strings);
 
         return instrument;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.allIn.close();
     }
 
     private StringsSection getStringsSection() throws IOException {
@@ -184,5 +195,16 @@ public class InstrumentReader {
             return strings;
         }
 
+    }
+
+    private static byte[] readAll(InputStream in) throws IOException {
+        ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024 * 4];
+        int count;
+        while ((count = in.read(buf)) != -1) {
+            bytesOut.write(buf, 0, count);
+        }
+        bytesOut.close();
+        return bytesOut.toByteArray();
     }
 }
