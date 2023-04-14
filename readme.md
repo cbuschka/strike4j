@@ -2,6 +2,13 @@
 
 ### Disclaimer: This lib is NO OFFICIAL Alesis product, it is not verified by the manufacturer and COULD CAUSE DAMAGE to your device! Using this lib COULD VOID THE WARRANTY of your device! Do NOT use this lib for copyright infringements. USE AT YOUR OWN RISK!
 
+## Features
+
+* Read instrument files (all fields of strike editor ui supported)
+* Write instrument files (keeps values of read but still unknown fields)
+* Validate instrument files
+* Read/ write validated with preset instruments
+
 ## Requirements
 
 * Github account
