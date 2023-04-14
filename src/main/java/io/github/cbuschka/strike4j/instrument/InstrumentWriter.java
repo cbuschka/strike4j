@@ -90,8 +90,6 @@ public class InstrumentWriter implements AutoCloseable {
     }
 
     private static class MappingsSection {
-        private static final int COMMAND = 0x63;
-
         private final StrikeDataOutputStream allOut;
 
         public MappingsSection(StrikeDataOutputStream out) {
@@ -103,33 +101,36 @@ public class InstrumentWriter implements AutoCloseable {
             StrikeDataOutputStream out = new StrikeDataOutputStream(bytesOut);
 
             out.writeBool8(instrument.getCycleMode() == CycleMode.RANDOM);
-            out.write(0); // skipped
+            out.writeUint8(instrument.getUnknown0());
             List<SampleMapping> sampleMappings = instrument.getSampleMappings();
             out.writeUint8(sampleMappings.size());
-            out.write(0); // 0,11
+            out.write(instrument.getUnknown1()); // 0,11
 
             List<String> stringTable = new ArrayList<>();
             for (int i = 0; i < sampleMappings.size(); ++i) {
                 SampleMapping sampleMapping = sampleMappings.get(i);
                 stringTable.add(sampleMapping.getSamplePath());
                 out.writeUint16((short) (stringTable.size() - 1));
-                out.writeSint8(COMMAND);
+                out.writeSint8(sampleMapping.getCommand());
 
                 out.writeSint8(sampleMapping.getMinVelocity());
                 out.writeSint8(sampleMapping.getMaxVelocity());
-                out.write(new byte[]{0, 0x7f}); // 0,0x7f or  3c, 3c for Instruments/Crashes/ZilStacker ST.sin
-                out.write(new byte[]{0, 0, 0});
+                out.writeUint8(sampleMapping.getUnknown2());
+                out.writeUint8(sampleMapping.getUnknown3());
+                out.writeSint8(sampleMapping.getUnknown4());
+                out.writeUint8(sampleMapping.getUnknown5());
+                out.writeSint8(sampleMapping.getUnknown6());
                 out.writeSint8(sampleMapping.getHihatOpenMin());
                 out.writeSint8(sampleMapping.getHihatOpenMax());
-                out.write(new byte[]{0, 0, 0, 0}); // in.consumeBytes(new byte[]{0, 0, 0, 0}); 0,4,0,0 or hhz1 edge
-                out.write(new byte[]{0, 0});
-                int dontKnow = 0;
-                out.writeUint8(dontKnow);
-                out.write(new byte[]{0});
+                out.writeUint8(sampleMapping.getUnknown7());
+                out.writeUint8(sampleMapping.getUnknown8());
+                out.write(new byte[]{0, 0, 0 });
+                out.writeUint8(sampleMapping.getUnknown9());
+                out.writeUint8(sampleMapping.getUnknown10());
+                out.writeUint8(sampleMapping.getUnknown11());
                 out.write(new byte[]{0, 0, 0, 0});
-                out.write(new byte[]{0});
-                int dontKnow2 = 1; // 1,3,7?
-                out.writeUint8(dontKnow2);
+                out.writeUint8(sampleMapping.getUnknown12());
+                out.writeUint8(sampleMapping.getUnknown13());
                 out.write(new byte[]{0, 0});
             }
             out.close();

@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.ZipFile;
 
@@ -26,17 +28,22 @@ class InstrumentWriterTest {
                     .map((zipFileEntry) -> {
                         try {
                             InputStream in = zipFile.getInputStream(zipFileEntry);
+                            byte[] origData = IOUtils.readAll(in);
+                            BigInteger origMd5 = IOUtils.getMd5For(origData);
                             InstrumentReader rd = new InstrumentReader(zipFileEntry.getName(),
-                                    in);
+                                    new ByteArrayInputStream(origData));
                             Instrument instrumentRead = rd.read(false);
 
                             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
                             InstrumentWriter writer = new InstrumentWriter(bytesOut);
                             writer.write(instrumentRead, false);
                             writer.close();
-                            InstrumentReader instrumentReader = new InstrumentReader(zipFileEntry.getName(), new ByteArrayInputStream(bytesOut.toByteArray()));
+                            byte[] writtenData = bytesOut.toByteArray();
+                            BigInteger writtenMd5 = IOUtils.getMd5For(writtenData);
+                            InstrumentReader instrumentReader = new InstrumentReader(zipFileEntry.getName(), new ByteArrayInputStream(writtenData));
                             Instrument instrumentReread = instrumentReader.read(false);
 
+                            assertThat(writtenMd5).isEqualTo(origMd5);
                             InstrumentAssertions.assertEqual(instrumentReread, instrumentRead);
 
                             log.info("{} ok.", zipFileEntry.getName());

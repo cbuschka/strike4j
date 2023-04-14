@@ -49,7 +49,16 @@ class StrikeDataInputStream extends FilterInputStream {
     static String toString(byte[] bytes) {
         StringBuilder buf = new StringBuilder("{");
         for (int i = 0; i < bytes.length; ++i) {
-            buf.append(i == 0 ? "" : ", ").append(Integer.toString(bytes[i], 16));
+            buf.append(i == 0 ? "" : ", 0x").append(Integer.toString(bytes[i], 16));
+        }
+        buf.append("}");
+        return buf.toString();
+    }
+
+    static String toString(int[] bytes) {
+        StringBuilder buf = new StringBuilder("{");
+        for (int i = 0; i < bytes.length; ++i) {
+            buf.append(i == 0 ? "" : ", 0x").append(Integer.toString(bytes[i], 16));
         }
         buf.append("}");
         return buf.toString();
@@ -74,6 +83,21 @@ class StrikeDataInputStream extends FilterInputStream {
         } else {
             throw new IOException("Expected bool8 at " + pos + " to be 0 or 1, but was 0x" + Integer.toHexString(x) + ".");
         }
+    }
+
+    public int readUint8(int[] allowed) throws IOException {
+        int x = read();
+        if (x < 0) {
+            throw new EOFException("at pos " + pos);
+        }
+
+        for (int i = 0; i < allowed.length; ++i) {
+            if (x == allowed[i]) {
+                return x;
+            }
+        }
+
+        throw new IOException("Expected one of " + toString(allowed) + ", but was 0x" + Integer.toString(x, 16) + "/" + x + ".");
     }
 
     public int readUint8() throws IOException {

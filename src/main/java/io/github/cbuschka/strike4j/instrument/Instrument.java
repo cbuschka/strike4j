@@ -60,4 +60,6 @@ public class Instrument {
     @NotNull
     @NotEmpty
     private List<@NotNull SampleMapping> sampleMappings = new ArrayList<>();
+    private int unknown0 = 0;
+    private int unknown1 = 0;
 }

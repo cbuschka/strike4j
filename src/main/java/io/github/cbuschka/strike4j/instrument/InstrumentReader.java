@@ -145,34 +145,58 @@ public class InstrumentReader implements AutoCloseable {
             int cycleModeRr0Random1 = in.readSint8();
             CycleMode cycleMode = cycleModeRr0Random1 == 0 ? CycleMode.ROUND_ROBIN : CycleMode.RANDOM;
             instrument.setCycleMode(cycleMode);
-            in.skipNBytes(1);
+            int undefined0 = in.readUint8();
+            instrument.setUnknown0(undefined0);
             int rageMappingCount = in.readUint8();
-            in.skipNBytes(1); // 0, 11?
+            int undefined1 = in.readUint8(); // 0, 11?
+            instrument.setUnknown1(undefined1);
 
             if (rageMappingCount > 0) {
                 for (int i = 0; i < rageMappingCount; ++i) {
                     int stringIndex = in.readInt16();
-                    String string = strings.get(stringIndex);
+                    String samplePath = strings.get(stringIndex);
                     int command = in.readUint8();
                     boolean isValidCommand = Arrays.stream(VALID_COMMANDS).anyMatch(x -> x == command);
                     if (isValidCommand) {
+                        SampleMapping sampleMapping = new SampleMapping();
+                        sampleMapping.setCommand(command);
+                        sampleMapping.setSamplePath(samplePath);
                         int velocityRangeMin = in.readUint8();
+                        sampleMapping.setMinVelocity(velocityRangeMin);
                         int velocityRangeMax = in.readUint8();
-                        in.skipNBytes(2); // 0,0x7f or  3c, 3c for Instruments/Crashes/ZilStacker ST.sin
-                        in.skipNBytes(3);
+                        sampleMapping.setMaxVelocity(velocityRangeMax);
+                        int undefined2 = in.readUint8(new int[]{0, 0x3c}); // 0 mostly, 3c for Instruments/Crashes/ZilStacker ST.sin
+                        sampleMapping.setUnknown2(undefined2);
+                        int undefined3 = in.readUint8(new int[]{0x7f, 0x3c}); // mostly 127
+                        sampleMapping.setUnknown3(undefined3);
+                        int undefined4 = in.readSint8(); // pos? bb snare -2 (OK!), mostly >0, 1, 2, 3, 4 ... max number of sample mappings (dups seen)
+                        sampleMapping.setUnknown4(undefined4);
+                        int undefined5 = in.readUint8(); // new int[]{0,0xc8,0x9c,0x70}
+                        sampleMapping.setUnknown5(undefined5);
+                        int undefined6 = in.readSint8(); // -1, -2, mostly 0, 1, 2, 3, 4 ...
+                        sampleMapping.setUnknown6(undefined6);
                         int hihatOpenRangeMin = in.readUint8();
+                        sampleMapping.setHihatOpenMin(hihatOpenRangeMin);
                         int hihatOpenRangeMax = in.readUint8();
-                        in.skipNBytes(4); // in.consumeBytes(new byte[]{0, 0, 0, 0}); 0,4,0,0 or hhz1 edge
-                        in.skipNBytes(2);
-                        int dontKnow = in.readUint8();
-                        in.skipNBytes(1);
-                        in.skipNBytes(4);
-                        in.skipNBytes(1);
-                        int dontKnow2 = in.readUint8(); // 1,3,7?
-                        in.skipNBytes(2);
-                        // log.info("path={} Got range {}-{} (hihatOpenedRangeMin={},hihatOpenedRangeMax={},dontKnow={},dontKnow2={}) string {}", path, min, max, hihatOpenedRangeMin, hihatOpenedRangeMax, dontKnow, dontKnow2, index);
-
-                        SampleMapping sampleMapping = new SampleMapping(velocityRangeMin, velocityRangeMax, hihatOpenRangeMin, hihatOpenRangeMax, string);
+                        sampleMapping.setHihatOpenMax(hihatOpenRangeMax);
+                        int undefined7 = in.readUint8(new int[]{6, 4, 5, 0, 3});
+                        sampleMapping.setUnknown7(undefined7);
+                        int undefined8 = in.readUint8(new int[]{0, 6, 4, 3});
+                        sampleMapping.setUnknown8(undefined8);
+                        in.consumeBytes(new byte[]{0, 0, 0});
+                        int undefined9 = in.readUint8(new int[]{0x0, 0x78, 0x1, 0x64, 0x7e, 0x6e});
+                        sampleMapping.setUnknown9(undefined9);
+                        int undefined10 = in.readUint8(); // 0x40,0x97,0xe3,0xa4, 0x34,0x98, 0-255?
+                        sampleMapping.setUnknown10(undefined10);
+                        int undefined11 = in.readUint8(); // mostly 0, 1-?
+                        sampleMapping.setUnknown11(undefined11);
+                        in.consumeBytes(new byte[]{0, 0, 0, 0});
+                        int undefined12 = in.readUint8(new int[]{0x0, 0x3c});
+                        sampleMapping.setUnknown12(undefined12);
+                        int undefined13 = in.readUint8(new int[]{0, 1, 3, 5, 7});
+                        sampleMapping.setUnknown13(undefined13);
+                        in.consumeBytes(new byte[]{0, 0});
+                        // log.info("path={} group={} u2={} u3={} u4={} y={} #={}", instrument.getPath(), instrument.getGroup(), undefined2, undefined3, undefined4, y, rageMappingCount);
                         instrument.getSampleMappings().add(sampleMapping);
                     } else {
                         throw new IOException("Unknown command 0x" + Integer.toHexString(command) + " at " + (in.getPos() - 1) + ".");
