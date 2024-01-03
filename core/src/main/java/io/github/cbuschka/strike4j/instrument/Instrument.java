@@ -1,11 +1,11 @@
 package io.github.cbuschka.strike4j.instrument;
 
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
